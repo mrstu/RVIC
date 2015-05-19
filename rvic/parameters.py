@@ -113,11 +113,23 @@ def gen_uh_init(config_file):
     # ---------------------------------------------------------------- #
     # Read Pour Points files
     try:
+        tofloat=lambda x: float(x)
         pour_points = pd.read_csv(config_dict['POUR_POINTS']['FILE_NAME'],
-                                  comment='#')
+                                comment='#', sep=',',header=0)
+#                                 converters={'lons':tofloat, 'lats':tofloat})
+#                                 comment='#', sep=',', header=0, dtype={'lons': np.float64, 'lats': np.float64})       
+#                                  comment='#', sep=',', converters={'lons': [float(x) for x , 'lats': np.float64})
+#                                   comment='#', sep=',', dtype={'lons': np.float64, 'lats': np.float64})
+#         log.info('pour_points lats type: %s'%type(pour_points['lats']))    
+#         log.info('pour_points lons type: %s'%type(pour_points['lons']))            
+#         pour_points['lats'] = pour_points['lats'].astype('float32')
+#         pour_points['lons'] = pour_points['lons'].astype('float32')        
+        log.info('pour_points keys: %s'%pour_points.keys())
         log.info('Opened Pour Points File: '
                  '{0}'.format(config_dict['POUR_POINTS']['FILE_NAME']))
-        if not (all(x in pour_points.keys() for x in ['lons', 'lats']) or
+
+
+        if not (all(x in pour_points.keys() for x in ['names','lons', 'lats']) or
                 all(x in pour_points.keys() for x in ['x', 'y'])):
             raise ValueError('Pour Points File must include '
                              'variables (lons, lats) or (x, y)')
@@ -258,8 +270,14 @@ def gen_uh_init(config_file):
             lons = fdr_data[fdr_lon][routxs]
         else:
             # use lons and lats to find xs and ys
+#             log.info("pour_points['lats'].values type %s"%type(pour_points['lats'].values))
+#             log.info("pour_points['lats'].values shape %s"%pour_points['lats'].values.shape)            
+#             lats = [float(x) for x in pour_points['lats'].values]
+#             lons = [float(x) for x in pour_points['lons'].values]
             lats = pour_points['lats'].values
             lons = pour_points['lons'].values
+#             glats = pour_points['lats'].values.astype(np.float64)
+#             glons = pour_points['lons'].values.astype(np.float64)
 
             # find x and y on routing grid
             routys, routxs = latlon2yx(plats=lats,

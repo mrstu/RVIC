@@ -24,7 +24,7 @@ log = getLogger(LOG_NAME)
 # find x y coordinates
 def latlon2yx(plats, plons, glats, glons):
     """find y x coordinates """
-
+#     log.info(plons[:5])
     # use astronomical conventions for longitude
     # (i.e. negative longitudes to the east of 0)
     if (glons.max() > 180):
@@ -33,6 +33,7 @@ def latlon2yx(plats, plons, glats, glons):
         log.info('adjusted grid lon to astronomical conventions')
     if (plons.max() > 180):
         posinds = np.nonzero(plons > 180)
+        log.info('type(plons[posinds]) %s %s'%(type(plons[posinds][0]),plons[posinds][:5]))
         plons[posinds] -= 360
         log.info('adjusted point lon to astronomical conventions')
 
